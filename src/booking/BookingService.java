@@ -9,12 +9,10 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
 import java.util.Scanner;
 import java.util.UUID;
 
@@ -24,101 +22,36 @@ public class BookingService {
 
 
     public void createBooking(UUID userId, UUID carId, LocalDate startDate, LocalDate endDate) throws IOException {
-
-        if (!userService.isValidUser(userId)) {
-            System.out.println("Invalid user.");
-            return;
-        }
-
-        if (!carService.isValidCar(carId)) {
-            System.out.println("Invalid car.");
-            return;
-        }
-
-        if (startDate.isAfter(endDate)) {
-            System.out.println("Start date cannot be after end date.");
-            return;
-        }
-
-        if (startDate.isBefore(LocalDate.now())) {
-            System.out.println("Start date cannot be in the past.");
-            return;
-        }
+        User user = userService.getUserById(userId);
+        Car car = carService.getCarById(carId);
 
         if (!isCarAvailable(carId, startDate, endDate)) {
             System.out.println("Car is already booked.");
             return;
         }
 
-        User[] users = userService.getAllUsers();
-        Car[] cars = carService.getAllCars();
-
-        User selectedUser = null;
-        Car selectedCar = null;
-
-        for (User user : users) {
-            if (user.getId().equals(userId)) {
-                selectedUser = user;
-                break;
-            }
-        }
-
-        for (Car car : cars) {
-            if (car.getId().equals(carId)) {
-                selectedCar = car;
-                break;
-            }
-        }
-
         Booking booking = new Booking(
                 UUID.randomUUID(),
-                selectedCar,
+                car,
                 startDate,
                 endDate,
                 LocalDateTime.now(),
                 BookingStatus.ACTIVE,
-                selectedUser
+                user
         );
 
-        String bookingLine =
-                booking.getId() + "," +
-                        booking.getCar().getId() + "," +
-                        booking.getStartDate() + "," +
-                        booking.getEndDate() + "," +
-                        booking.getBookedAt() + "," +
-                        booking.getStatus() + "," +
-                        booking.getUser().getId() +
-                        System.lineSeparator();
-
-        Path path = Path.of("src/Bookings.csv");
-
-        if (!Files.exists(path)) {
-            Files.writeString(
-                    path,
-                    "id,carId,startDate,endDate,bookedAt,status,userId"
-                            + System.lineSeparator(),
-                    StandardOpenOption.CREATE
-            );
-        }
-
-        Files.writeString(
-                path,
-                bookingLine,
-                StandardOpenOption.CREATE,
-                StandardOpenOption.APPEND
-        );
-
-        long days = ChronoUnit.DAYS.between(startDate, endDate);
-
-        if (days == 0) {
-            days = 1;
-        }
-
-        BigDecimal price = selectedCar.getPricePerDay().multiply(BigDecimal.valueOf(days));
+        Booking[] bookings = getAllBookings();
+        Booking[] updated = Arrays.copyOf(bookings, bookings.length + 1);
+        updated[bookings.length] = booking;
+        saveAllBookings(updated);
 
         System.out.println("Booking created successfully.");
-        System.out.println("Price: " + price);
+        System.out.println("Price: " + calculatePrice(car, startDate, endDate));
+    }
 
+    private BigDecimal calculatePrice(Car car, LocalDate startDate, LocalDate endDate) {
+        long days = ChronoUnit.DAYS.between(startDate, endDate);
+        return car.getPricePerDay().multiply(BigDecimal.valueOf(days));
     }
 
     public boolean isCarAvailable(UUID carId, LocalDate startDate, LocalDate endDate) throws IOException {
@@ -136,17 +69,6 @@ public class BookingService {
             }
         }
         return true;
-    }
-
-    public boolean isValidDate(String date) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
-        try {
-            LocalDate.parse(date, formatter);
-            return true;
-        } catch (DateTimeParseException e) {
-            return false;
-        }
     }
 
     public Booking[] getAllBookings() throws IOException {
@@ -248,14 +170,25 @@ public class BookingService {
     }
 
     public void deleteBooking(UUID id) throws IOException {
+        Booking[] bookings = getAllBookings();
+        boolean found = false;
 
-        for(Booking booking : getAllBookings()) {
-            if(booking.getStatus() == BookingStatus.ACTIVE) {
-                booking.setStatus(BookingStatus.CANCELED);
-            } else {
-                System.out.println("There no active booking with this ID");
+        for (int i = 0; i < bookings.length; i++) {
+            if (bookings[i].getId().equals(id)
+                    && bookings[i].getStatus() == BookingStatus.ACTIVE) {
+                bookings[i].setStatus(BookingStatus.CANCELED);
+                found = true;
+                break;
             }
         }
+
+        if (!found) {
+            System.out.println("There is no active booking with this ID");
+            return;
+        }
+
+        saveAllBookings(bookings);
+        System.out.println("Booking canceled");
     }
 
     public boolean isValidBooking(UUID id) throws IOException {
@@ -283,6 +216,28 @@ public class BookingService {
                 System.out.println("Invalid Id format, please try again:");
             }
         }
+    }
+
+
+    private void saveAllBookings(Booking[] bookings) throws IOException {
+        StringBuilder sb = new StringBuilder();
+        sb.append("id,carId,startDate,endDate,bookedAt,status,userId\n");
+
+        for (Booking booking : bookings) {
+            sb.append(toCsvLine(booking)).append("\n");
+        }
+
+        Files.writeString(Path.of("src/Bookings.csv"), sb.toString());
+    }
+
+    private String toCsvLine(Booking booking) {
+        return booking.getId() + ","
+                + booking.getCar().getId() + ","
+                + booking.getStartDate() + ","
+                + booking.getEndDate() + ","
+                + booking.getBookedAt() + ","
+                + booking.getStatus() + ","
+                + booking.getUser().getId();
     }
 
 }
