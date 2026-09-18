@@ -1,9 +1,9 @@
-package booking;
+package com.dezsoroland.booking;
 
-import car.Car;
-import car.CarService;
-import user.User;
-import user.UserService;
+import com.dezsoroland.car.Car;
+import com.dezsoroland.car.CarService;
+import com.dezsoroland.user.User;
+import com.dezsoroland.user.UserService;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -183,7 +183,7 @@ public class BookingService {
         }
 
         if (!found) {
-            System.out.println("There is no active booking with this ID");
+            System.out.println("There is no active com.dezsoroland.booking with this ID");
             return;
         }
 
@@ -203,7 +203,7 @@ public class BookingService {
     };
 
     public UUID readBookingId(Scanner scanner) throws IOException {
-        System.out.println("Please give a booking Id:");
+        System.out.println("Please give a com.dezsoroland.booking Id:");
         while (true) {
             String input = scanner.nextLine().trim();
             try {
@@ -211,7 +211,7 @@ public class BookingService {
                 if (isValidBooking(id)) {
                     return id;
                 }
-                System.out.println("No booking found with this Id, please try again:");
+                System.out.println("No com.dezsoroland.booking found with this Id, please try again:");
             } catch (IllegalArgumentException e) {
                 System.out.println("Invalid Id format, please try again:");
             }

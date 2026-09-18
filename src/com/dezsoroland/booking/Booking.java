@@ -1,7 +1,7 @@
-package booking;
+package com.dezsoroland.booking;
 
-import car.Car;
-import user.User;
+import com.dezsoroland.car.Car;
+import com.dezsoroland.user.User;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -102,12 +102,12 @@ public class Booking {
     public String toString() {
         return "Booking{" +
                 "id=" + id +
-                ", car=" + car +
+                ", com.dezsoroland.car=" + car +
                 ", startDate=" + startDate +
                 ", endDate=" + endDate +
                 ", bookedAt=" + bookedAt +
                 ", status=" + status +
-                ", user=" + user +
+                ", com.dezsoroland.user=" + user +
                 '}';
     }
 }

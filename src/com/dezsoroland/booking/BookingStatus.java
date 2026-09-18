@@ -1,4 +1,4 @@
-package booking;
+package com.dezsoroland.booking;
 
 public enum BookingStatus {
     ACTIVE,

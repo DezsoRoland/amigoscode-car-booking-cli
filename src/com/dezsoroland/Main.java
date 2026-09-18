@@ -1,10 +1,10 @@
 package com.dezsoroland;
 
-import booking.Booking;
-import booking.BookingService;
-import car.CarService;
-import user.UserService;
-import utility.Utility;
+import com.dezsoroland.booking.Booking;
+import com.dezsoroland.booking.BookingService;
+import com.dezsoroland.car.CarService;
+import com.dezsoroland.user.UserService;
+import com.dezsoroland.utility.Utility;
 
 import java.io.IOException;
 import java.time.LocalDate;

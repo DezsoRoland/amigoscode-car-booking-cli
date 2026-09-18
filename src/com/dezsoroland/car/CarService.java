@@ -1,6 +1,4 @@
-package car;
-
-import user.User;
+package com.dezsoroland.car;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -69,7 +67,7 @@ public class CarService {
     }
 
     public UUID readCarId(Scanner scanner) throws IOException {
-        System.out.println("Please give a car Id:");
+        System.out.println("Please give a com.dezsoroland.car Id:");
         while (true) {
             String input = scanner.nextLine().trim();
             try {
@@ -77,7 +75,7 @@ public class CarService {
                 if (isValidCar(id)) {
                     return id;
                 }
-                System.out.println("No car found with this Id, please try again:");
+                System.out.println("No com.dezsoroland.car found with this Id, please try again:");
             } catch (IllegalArgumentException e) {
                 System.out.println("Invalid Id format, please try again:");
             }

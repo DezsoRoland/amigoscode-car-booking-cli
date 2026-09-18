@@ -1,4 +1,4 @@
-package user;
+package com.dezsoroland.user;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -55,7 +55,7 @@ public class UserService {
     }
 
     public UUID readUserId(Scanner scanner) throws IOException {
-        System.out.println("Please give a user Id:");
+        System.out.println("Please give a com.dezsoroland.user Id:");
         while (true) {
             String input = scanner.nextLine().trim();
             try {
@@ -63,7 +63,7 @@ public class UserService {
                 if (isValidUser(id)) {
                     return id;
                 }
-                System.out.println("No user found with this Id, please try again:");
+                System.out.println("No com.dezsoroland.user found with this Id, please try again:");
             } catch (IllegalArgumentException e) {
                 System.out.println("Invalid Id format, please try again:");
             }

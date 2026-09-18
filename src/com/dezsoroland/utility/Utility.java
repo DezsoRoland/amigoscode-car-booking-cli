@@ -1,4 +1,4 @@
-package utility;
+package com.dezsoroland.utility;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;

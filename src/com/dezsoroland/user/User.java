@@ -1,4 +1,4 @@
-package user;
+package com.dezsoroland.user;
 
 import java.util.Objects;
 import java.util.UUID;
