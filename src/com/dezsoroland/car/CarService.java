@@ -65,20 +65,4 @@ public class CarService {
         }
         return null;
     }
-
-    public UUID readCarId(Scanner scanner) throws IOException {
-        System.out.println("Please give a com.dezsoroland.car Id:");
-        while (true) {
-            String input = scanner.nextLine().trim();
-            try {
-                UUID id = UUID.fromString(input);
-                if (isValidCar(id)) {
-                    return id;
-                }
-                System.out.println("No com.dezsoroland.car found with this Id, please try again:");
-            } catch (IllegalArgumentException e) {
-                System.out.println("Invalid Id format, please try again:");
-            }
-        }
-    }
 }

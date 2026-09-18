@@ -4,10 +4,10 @@ import com.dezsoroland.booking.Booking;
 import com.dezsoroland.booking.BookingService;
 import com.dezsoroland.car.CarService;
 import com.dezsoroland.user.UserService;
-import com.dezsoroland.utility.Utility;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.Arrays;
 import java.util.Scanner;
 import java.util.UUID;
@@ -18,21 +18,99 @@ public class Main {
     static UserService userService = new UserService();
     static CarService carService = new CarService();
     static BookingService bookingService = new BookingService();
-    static Utility utility = new Utility();
 
-    public static void exitMenu(Scanner scanner) {
-        scanner.close();
+    public static UUID readUserId(Scanner scanner) throws IOException {
+        System.out.println("Please give a user Id:");
+        while (true) {
+            String input = scanner.nextLine().trim();
+            try {
+                UUID id = UUID.fromString(input);
+                if (userService.isValidUser(id)) {
+                    return id;
+                }
+                System.out.println("No user found with this Id, please try again:");
+            } catch (IllegalArgumentException e) {
+                System.out.println("Invalid Id format, please try again:");
+            }
+        }
+    }
+
+
+    public static UUID readCarId(Scanner scanner) throws IOException {
+        System.out.println("Please give a car Id:");
+        while (true) {
+            String input = scanner.nextLine().trim();
+            try {
+                UUID id = UUID.fromString(input);
+                if (carService.isValidCar(id)) {
+                    return id;
+                }
+                System.out.println("No car found with this Id, please try again:");
+            } catch (IllegalArgumentException e) {
+                System.out.println("Invalid Id format, please try again:");
+            }
+        }
+    }
+
+    public static UUID readBookingId(Scanner scanner) throws IOException {
+        System.out.println("Please give a com.dezsoroland.booking Id:");
+        while (true) {
+            String input = scanner.nextLine().trim();
+            try {
+                UUID id = UUID.fromString(input);
+                if (bookingService.isValidBooking(id)) {
+                    return id;
+                }
+                System.out.println("No com.dezsoroland.booking found with this Id, please try again:");
+            } catch (IllegalArgumentException e) {
+                System.out.println("Invalid Id format, please try again:");
+            }
+        }
+    }
+
+    public static LocalDate readStartDate(Scanner scanner) {
+        System.out.println("Please give a start date (YYYY-MM-dd):");
+        while (true) {
+            String input = scanner.nextLine().trim();
+            try {
+                LocalDate startDate = LocalDate.parse(input);
+                if (startDate.isBefore(LocalDate.now())) {
+                    System.out.println("Start date can't be in the past, please try again:");
+                    continue;
+                }
+                return startDate;
+            } catch (DateTimeParseException e) {
+                System.out.println("Please give a valid date format (YYYY-MM-dd):");
+            }
+        }
+    }
+
+    public static LocalDate readEndDate(Scanner scanner, LocalDate startDate) {
+        System.out.println("Please give an end date (YYYY-MM-dd):");
+        while (true) {
+            String input = scanner.nextLine().trim();
+            try {
+                LocalDate endDate = LocalDate.parse(input);
+                if (!endDate.isAfter(startDate)) {
+                    System.out.println("End date must be after " + startDate + ", please try again:");
+                    continue;
+                }
+                return endDate;
+            } catch (DateTimeParseException e) {
+                System.out.println("Please give a valid date format (YYYY-MM-dd):");
+            }
+        }
     }
 
     public static void createBooking(Scanner scanner) throws IOException {
 
-       UUID userId = userService.readUserId(scanner);
+       UUID userId = readUserId(scanner);
 
-       UUID carId = carService.readCarId(scanner);
+       UUID carId = readCarId(scanner);
 
-       LocalDate startDate = utility.readStartDate(scanner);
+       LocalDate startDate = readStartDate(scanner);
 
-       LocalDate endDate = utility.readEndDate(scanner, startDate);
+       LocalDate endDate = readEndDate(scanner, startDate);
 
        bookingService.createBooking(userId, carId, startDate, endDate);
     }
@@ -50,7 +128,7 @@ public class Main {
     }
 
     public static void getBookingByUserId(Scanner scanner) throws IOException {
-       UUID userId = userService.readUserId(scanner);
+       UUID userId = readUserId(scanner);
 
        Booking[] bookingsByUser = bookingService.getBookingsByUserId(userId);
        System.out.println(Arrays.toString(bookingsByUser));
@@ -61,7 +139,7 @@ public class Main {
     }
 
     public static void deleteBookingById(Scanner scanner) throws IOException {
-        UUID bookingId = bookingService.readBookingId(scanner);
+        UUID bookingId = readBookingId(scanner);
 
         bookingService.deleteBooking(bookingId);
         System.out.println("Booking deleted");

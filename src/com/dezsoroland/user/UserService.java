@@ -53,22 +53,4 @@ public class UserService {
         }
         return null;
     }
-
-    public UUID readUserId(Scanner scanner) throws IOException {
-        System.out.println("Please give a com.dezsoroland.user Id:");
-        while (true) {
-            String input = scanner.nextLine().trim();
-            try {
-                UUID id = UUID.fromString(input);
-                if (isValidUser(id)) {
-                    return id;
-                }
-                System.out.println("No com.dezsoroland.user found with this Id, please try again:");
-            } catch (IllegalArgumentException e) {
-                System.out.println("Invalid Id format, please try again:");
-            }
-        }
-    }
-
-
 }

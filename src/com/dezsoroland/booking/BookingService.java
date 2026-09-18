@@ -202,23 +202,6 @@ public class BookingService {
         return false;
     };
 
-    public UUID readBookingId(Scanner scanner) throws IOException {
-        System.out.println("Please give a com.dezsoroland.booking Id:");
-        while (true) {
-            String input = scanner.nextLine().trim();
-            try {
-                UUID id = UUID.fromString(input);
-                if (isValidBooking(id)) {
-                    return id;
-                }
-                System.out.println("No com.dezsoroland.booking found with this Id, please try again:");
-            } catch (IllegalArgumentException e) {
-                System.out.println("Invalid Id format, please try again:");
-            }
-        }
-    }
-
-
     private void saveAllBookings(Booking[] bookings) throws IOException {
         StringBuilder sb = new StringBuilder();
         sb.append("id,carId,startDate,endDate,bookedAt,status,userId\n");
