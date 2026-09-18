@@ -3,6 +3,7 @@ package com.dezsoroland.booking;
 import com.dezsoroland.car.Car;
 import com.dezsoroland.user.User;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -15,18 +16,20 @@ public class Booking {
     private LocalDate endDate;
     private LocalDateTime bookedAt;
     private BookingStatus status;
+    private BigDecimal price;
     private User user;
 
     public Booking() {
     }
 
-    public Booking(UUID id, Car car, LocalDate startDate, LocalDate endDate, LocalDateTime bookedAt, BookingStatus status, User user) {
+    public Booking(UUID id, Car car, LocalDate startDate, LocalDate endDate, LocalDateTime bookedAt, BookingStatus status, BigDecimal price, User user) {
         this.id = id;
         this.car = car;
         this.startDate = startDate;
         this.endDate = endDate;
         this.bookedAt = bookedAt;
         this.status = status;
+        this.price = price;
         this.user = user;
     }
 
@@ -78,6 +81,14 @@ public class Booking {
         this.status = status;
     }
 
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
+
     public User getUser() {
         return user;
     }
@@ -90,24 +101,25 @@ public class Booking {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Booking booking = (Booking) o;
-        return Objects.equals(id, booking.id) && Objects.equals(car, booking.car) && Objects.equals(startDate, booking.startDate) && Objects.equals(endDate, booking.endDate) && Objects.equals(bookedAt, booking.bookedAt) && status == booking.status && Objects.equals(user, booking.user);
+        return Objects.equals(id, booking.id) && Objects.equals(car, booking.car) && Objects.equals(startDate, booking.startDate) && Objects.equals(endDate, booking.endDate) && Objects.equals(bookedAt, booking.bookedAt) && status == booking.status && Objects.equals(price, booking.price) && Objects.equals(user, booking.user);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, car, startDate, endDate, bookedAt, status, user);
+        return Objects.hash(id, car, startDate, endDate, bookedAt, status, price, user);
     }
 
     @Override
     public String toString() {
         return "Booking{" +
                 "id=" + id +
-                ", com.dezsoroland.car=" + car +
+                ", car=" + car +
                 ", startDate=" + startDate +
                 ", endDate=" + endDate +
                 ", bookedAt=" + bookedAt +
                 ", status=" + status +
-                ", com.dezsoroland.user=" + user +
+                ", price=" + price +
+                ", user=" + user +
                 '}';
     }
 }

@@ -7,8 +7,6 @@ import com.dezsoroland.user.UserService;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -18,9 +16,10 @@ import java.util.UUID;
 public class BookingService {
     CarService carService = new CarService();
     UserService userService = new UserService();
+    BookingDao bookingDao = new BookingDao();
 
 
-    public void createBooking(UUID userId, UUID carId, LocalDate startDate, LocalDate endDate) throws IOException {
+    public void createBooking(UUID userId, UUID carId, LocalDate startDate, LocalDate endDate) {
         User user = userService.getUserById(userId);
         Car car = carService.getCarById(carId);
 
@@ -29,6 +28,8 @@ public class BookingService {
             return;
         }
 
+        BigDecimal price = calculatePrice(car, startDate, endDate);
+
         Booking booking = new Booking(
                 UUID.randomUUID(),
                 car,
@@ -36,16 +37,14 @@ public class BookingService {
                 endDate,
                 LocalDateTime.now(),
                 BookingStatus.ACTIVE,
+                price,
                 user
         );
 
-        Booking[] bookings = getAllBookings();
-        Booking[] updated = Arrays.copyOf(bookings, bookings.length + 1);
-        updated[bookings.length] = booking;
-        saveAllBookings(updated);
+        bookingDao.save(booking);
 
         System.out.println("Booking created successfully.");
-        System.out.println("Price: " + calculatePrice(car, startDate, endDate));
+        System.out.println("Price: " + price);
     }
 
     private BigDecimal calculatePrice(Car car, LocalDate startDate, LocalDate endDate) {
@@ -53,7 +52,7 @@ public class BookingService {
         return car.getPricePerDay().multiply(BigDecimal.valueOf(days));
     }
 
-    public boolean isCarAvailable(UUID carId, LocalDate startDate, LocalDate endDate) throws IOException {
+    public boolean isCarAvailable(UUID carId, LocalDate startDate, LocalDate endDate) {
         for (Booking booking : getAllBookings()) {
             if (!booking.getCar().getId().equals(carId)) {
                 continue;
@@ -70,57 +69,27 @@ public class BookingService {
         return true;
     }
 
-    public Booking[] getAllBookings() throws IOException {
-            String content = Files.readString(Path.of("src/Bookings.csv"));
-
-            String[] lines = content.split("\\R");
-
-            Booking[] bookings = new Booking[lines.length - 1];
-
-            for (int i = 1; i < lines.length; i++) {
-                String[] data = lines[i].split(",");
-
-                UUID id = UUID.fromString(data[0]);
-                UUID carId = UUID.fromString(data[1]);
-                LocalDate startDate = LocalDate.parse(data[2]);
-                LocalDate endDate = LocalDate.parse(data[3]);
-                LocalDateTime bookedAt = LocalDateTime.parse(data[4]);
-                BookingStatus status = BookingStatus.valueOf(data[5]);
-                UUID userId = UUID.fromString(data[6]);
-
-                Car car = carService.getCarById(carId);
-                User user = userService.getUserById(userId);
-
-                bookings[i - 1] = new Booking(id, car, startDate, endDate, bookedAt, status, user);
-            }
-
-            return bookings;
+    public Booking[] getAllBookings() {
+            return bookingDao.getAllBookings();
     }
 
-    public Booking[] getBookingsByUserId(UUID userId) throws IOException {
-        Booking[] bookings = getAllBookings();
-
+    public Booking[] getBookingsByUserId(UUID userId) {
+        Booking[] bookings = bookingDao.getAllBookings();
+        Booking[] result = new Booking[bookings.length];
         int count = 0;
+
         for (Booking booking : bookings) {
             if (booking.getUser().getId().equals(userId)) {
+                result[count] = booking;
                 count++;
             }
         }
 
-        Booking[] bookingsByUser = new Booking[count];
-        int index = 0;
-        for (Booking booking : bookings) {
-            if (booking.getUser().getId().equals(userId)) {
-                bookingsByUser[index] = booking;
-                index++;
-            }
-        }
-
-        return bookingsByUser;
+        return Arrays.copyOf(result, count);
     }
 
 
-    public Car[] getAvailableCars() throws IOException {
+    public Car[] getAvailableCars() {
         LocalDate today = LocalDate.now();
         LocalDate tomorrow = today.plusDays(1);
         Car[] cars = carService.getAllCars();
@@ -144,7 +113,7 @@ public class BookingService {
         return availableCars;
     }
 
-    public Car[] getAvailableElectricCars() throws IOException {
+    public Car[] getAvailableElectricCars() {
         LocalDate today = LocalDate.now();
         LocalDate tomorrow = today.plusDays(1);
         Car[] cars = carService.getAllCars();
@@ -168,25 +137,15 @@ public class BookingService {
         return availableCars;
     }
 
-    public void deleteBooking(UUID id) throws IOException {
-        Booking[] bookings = getAllBookings();
-        boolean found = false;
+    public void deleteBooking(UUID id) {
+        Booking booking = bookingDao.getBookingById(id);
 
-        for (int i = 0; i < bookings.length; i++) {
-            if (bookings[i].getId().equals(id)
-                    && bookings[i].getStatus() == BookingStatus.ACTIVE) {
-                bookings[i].setStatus(BookingStatus.CANCELED);
-                found = true;
-                break;
-            }
-        }
-
-        if (!found) {
-            System.out.println("There is no active com.dezsoroland.booking with this ID");
+        if (booking == null || booking.getStatus() != BookingStatus.ACTIVE) {
+            System.out.println("There is no active booking with this ID");
             return;
         }
 
-        saveAllBookings(bookings);
+        booking.setStatus(BookingStatus.CANCELED);
         System.out.println("Booking canceled");
     }
 
@@ -200,26 +159,4 @@ public class BookingService {
 
         return false;
     };
-
-    private void saveAllBookings(Booking[] bookings) throws IOException {
-        StringBuilder sb = new StringBuilder();
-        sb.append("id,carId,startDate,endDate,bookedAt,status,userId\n");
-
-        for (Booking booking : bookings) {
-            sb.append(toCsvLine(booking)).append("\n");
-        }
-
-        Files.writeString(Path.of("src/Bookings.csv"), sb.toString());
-    }
-
-    private String toCsvLine(Booking booking) {
-        return booking.getId() + ","
-                + booking.getCar().getId() + ","
-                + booking.getStartDate() + ","
-                + booking.getEndDate() + ","
-                + booking.getBookedAt() + ","
-                + booking.getStatus() + ","
-                + booking.getUser().getId();
-    }
-
 }
