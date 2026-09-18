@@ -94,47 +94,38 @@ public class BookingService {
         LocalDate tomorrow = today.plusDays(1);
         Car[] cars = carService.getAllCars();
 
-        int availableCount = 0;
+        Car[] result = new Car[cars.length];
+        int count = 0;
+
         for (Car car : cars) {
             if (isCarAvailable(car.getId(), today, tomorrow)) {
-                availableCount++;
+                result[count] = car;
+                count++;
             }
         }
 
-        Car[] availableCars = new Car[availableCount];
-        int index = 0;
-        for (Car car : cars) {
-            if (isCarAvailable(car.getId(), today, tomorrow)) {
-                availableCars[index] = car;
-                index++;
-            }
-        }
-
-        return availableCars;
+        return Arrays.copyOf(result, count);
     }
 
     public Car[] getAvailableElectricCars() {
-        LocalDate today = LocalDate.now();
-        LocalDate tomorrow = today.plusDays(1);
-        Car[] cars = carService.getAllCars();
+        Car[] availableCars = getAvailableCars();
 
-        int availableCount = 0;
-        for (Car car : cars) {
-            if (car.isElectric() && isCarAvailable(car.getId(), today, tomorrow)) {
-                availableCount++;
+        int electricCount = 0;
+        for (Car car : availableCars) {
+            if (car.isElectric()) {
+                electricCount++;
             }
         }
 
-        Car[] availableCars = new Car[availableCount];
+        Car[] electricCars = new Car[electricCount];
         int index = 0;
-        for (Car car : cars) {
-            if (car.isElectric() && isCarAvailable(car.getId(), today, tomorrow)) {
-                availableCars[index] = car;
+        for (Car car : availableCars) {
+            if (car.isElectric()) {
+                electricCars[index] = car;
                 index++;
             }
         }
-
-        return availableCars;
+        return electricCars;
     }
 
     public void deleteBooking(UUID id) {
@@ -149,8 +140,7 @@ public class BookingService {
         System.out.println("Booking canceled");
     }
 
-    public boolean isValidBooking(UUID id) throws IOException {
-        System.out.println("Searching for: " + id);
+    public boolean isValidBooking(UUID id) {
         for (Booking booking : getAllBookings()) {
             if (booking.getId().equals(id)) {
                 return true;

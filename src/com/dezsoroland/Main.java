@@ -53,7 +53,7 @@ public class Main {
     }
 
     public static UUID readBookingId(Scanner scanner) throws IOException {
-        System.out.println("Please give a com.dezsoroland.booking Id:");
+        System.out.println("Please give a booking Id:");
         while (true) {
             String input = scanner.nextLine().trim();
             try {
@@ -61,7 +61,7 @@ public class Main {
                 if (bookingService.isValidBooking(id)) {
                     return id;
                 }
-                System.out.println("No com.dezsoroland.booking found with this Id, please try again:");
+                System.out.println("No booking found with this Id, please try again:");
             } catch (IllegalArgumentException e) {
                 System.out.println("Invalid Id format, please try again:");
             }
@@ -146,7 +146,6 @@ public class Main {
         UUID bookingId = readBookingId(scanner);
 
         bookingService.deleteBooking(bookingId);
-        System.out.println("Booking deleted");
     }
 
 

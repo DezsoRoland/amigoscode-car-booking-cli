@@ -13,8 +13,6 @@ public class CarService {
     public boolean isValidCar(UUID id) {
         Car[] cars = getAllCars();
 
-        System.out.println("Searching for: " + id);
-
         for (Car car : cars) {
             if(id.equals(car.getId())) {
                 return true;

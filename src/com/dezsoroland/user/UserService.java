@@ -19,7 +19,6 @@ public class UserService {
 
     public boolean isValidUser(UUID id) {
         User[] users = getAllUsers();
-        System.out.println("Searching for: " + id);
         for (User user : users) {
             if (user.getId().equals(id)) {
                 return true;
