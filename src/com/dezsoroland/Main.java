@@ -35,8 +35,6 @@ public class Main {
        LocalDate endDate = utility.readEndDate(scanner, startDate);
 
        bookingService.createBooking(userId, carId, startDate, endDate);
-
-       scanner.close();
     }
 
     public static void getAllBookings() throws IOException {
@@ -72,9 +70,44 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
         Scanner scanner = new Scanner(System.in);
+        boolean running = true;
 
+        while (running) {
+            printMenu();
+            int menuOption = readMenuOption(scanner);
 
+            switch (menuOption) {
+                case 1 -> createBooking(scanner);
+                case 2 -> deleteBookingById(scanner);
+                case 3 -> getBookingByUserId(scanner);
+                case 4 -> getAllBookings();
+                case 5 -> getAvailableCars();
+                case 6 -> carService.getElectricCars();
+                case 7 -> userService.listAllUserNames();
+                case 8 -> running = false;
+            }
+        }
 
+        scanner.close();
+        System.out.println("Goodbye!");
+    }
+
+    private static int readMenuOption(Scanner scanner) {
+        while (true) {
+            try {
+                int menuOption = Integer.parseInt(scanner.nextLine().trim());
+                if (menuOption >= 1 && menuOption <= 8) {
+                    return menuOption;
+                }
+                System.out.println("Please enter a number between 1 and 8.");
+            } catch (NumberFormatException e) {
+                System.out.println("Please enter a valid number!");
+            }
+        }
+    }
+
+    private static void printMenu() {
+        System.out.println();
         System.out.println("1 - Book Car");
         System.out.println("2 - Delete Booking");
         System.out.println("3 - View All User Booked Cars");
@@ -83,31 +116,5 @@ public class Main {
         System.out.println("6 - View Available Electric Cars");
         System.out.println("7 - View All Users");
         System.out.println("8 - Exit");
-
-        int menuOption;
-
-        while (true) {
-            try {
-                menuOption = Integer.parseInt(scanner.nextLine());
-                if (menuOption >= 1 && menuOption <= 8) {
-                    break;
-                }
-
-                System.out.println("Please enter a number between 1 and 8.");
-            } catch (NumberFormatException e) {
-                System.out.println("Please enter a valid number!");
-            }
-        }
-
-        switch (menuOption) {
-            case 1 -> createBooking(scanner);
-            case 2 -> deleteBookingById(scanner);
-            case 3 -> getBookingByUserId(scanner);
-            case 4 -> getAllBookings();
-            case 5 -> getAvailableCars();
-            case 6 -> carService.getElectricCars();
-            case 7 -> userService.listAllUserNames();
-            case 8 -> exitMenu(scanner);
-        };
     }
 }
