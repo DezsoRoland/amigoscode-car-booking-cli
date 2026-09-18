@@ -13,7 +13,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
-import java.util.Scanner;
 import java.util.UUID;
 
 public class BookingService {
@@ -122,51 +121,51 @@ public class BookingService {
 
 
     public Car[] getAvailableCars() throws IOException {
-        Booking[] bookings = getAllBookings();
+        LocalDate today = LocalDate.now();
+        LocalDate tomorrow = today.plusDays(1);
         Car[] cars = carService.getAllCars();
 
         int availableCount = 0;
-
-        for(Car car : cars){
-            boolean isBooked = false;
-            for(Booking booking : bookings){
-                if(booking.getStatus() == BookingStatus.ACTIVE && booking.getCar().getId().equals(car.getId())) {
-                    isBooked = true;
-                    break;
-                }
+        for (Car car : cars) {
+            if (isCarAvailable(car.getId(), today, tomorrow)) {
+                availableCount++;
             }
-            if(!isBooked){
-                availableCount ++;
-            }
-
         }
 
         Car[] availableCars = new Car[availableCount];
-
         int index = 0;
-
         for (Car car : cars) {
-
-            boolean isBooked = false;
-
-            for (Booking booking : bookings) {
-
-                if (booking.getStatus() == BookingStatus.ACTIVE
-                        && booking.getCar().getId().equals(car.getId())) {
-
-                    isBooked = true;
-                    break;
-                }
-            }
-
-            if (!isBooked) {
+            if (isCarAvailable(car.getId(), today, tomorrow)) {
                 availableCars[index] = car;
                 index++;
             }
         }
 
         return availableCars;
+    }
 
+    public Car[] getAvailableElectricCars() throws IOException {
+        LocalDate today = LocalDate.now();
+        LocalDate tomorrow = today.plusDays(1);
+        Car[] cars = carService.getAllCars();
+
+        int availableCount = 0;
+        for (Car car : cars) {
+            if (car.isElectric() && isCarAvailable(car.getId(), today, tomorrow)) {
+                availableCount++;
+            }
+        }
+
+        Car[] availableCars = new Car[availableCount];
+        int index = 0;
+        for (Car car : cars) {
+            if (car.isElectric() && isCarAvailable(car.getId(), today, tomorrow)) {
+                availableCars[index] = car;
+                index++;
+            }
+        }
+
+        return availableCars;
     }
 
     public void deleteBooking(UUID id) throws IOException {

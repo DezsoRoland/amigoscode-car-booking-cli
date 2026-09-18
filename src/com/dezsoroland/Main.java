@@ -138,6 +138,10 @@ public class Main {
         System.out.println(Arrays.toString(bookingService.getAvailableCars()));
     }
 
+    public static void getAvailableElectricCars() throws IOException {
+        System.out.println(Arrays.toString(bookingService.getAvailableElectricCars()));
+    }
+
     public static void deleteBookingById(Scanner scanner) throws IOException {
         UUID bookingId = readBookingId(scanner);
 
@@ -160,7 +164,7 @@ public class Main {
                 case 3 -> getBookingByUserId(scanner);
                 case 4 -> getAllBookings();
                 case 5 -> getAvailableCars();
-                case 6 -> carService.getElectricCars();
+                case 6 -> getAvailableElectricCars();
                 case 7 -> userService.listAllUserNames();
                 case 8 -> running = false;
             }

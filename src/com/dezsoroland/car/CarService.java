@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Scanner;
 import java.util.UUID;
 
 public class CarService {
@@ -33,15 +32,6 @@ public class CarService {
         return cars;
     }
 
-    public void getElectricCars() throws IOException {
-        Car[] cars = getAllCars();
-
-        for (Car car : cars) {
-            if(car.isElectric()){
-                System.out.println(car.getCarBrand() + " - " + car.getModel());
-            }
-        }
-    }
 
     public boolean isValidCar(UUID id) throws IOException {
         Car[] cars = getAllCars();
