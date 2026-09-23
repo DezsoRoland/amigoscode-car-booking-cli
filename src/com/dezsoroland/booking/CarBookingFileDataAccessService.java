@@ -40,6 +40,11 @@ public class CarBookingFileDataAccessService implements BookingDao {
         writeToFile();
     }
 
+    @Override
+    public void update(Booking booking) {
+        writeToFile();
+    }
+
     private Booking[] readFromFile() {
         File file = new File(FILE_NAME);
         if (!file.exists()) {

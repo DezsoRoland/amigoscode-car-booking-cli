@@ -144,6 +144,7 @@ public class BookingService {
         }
 
         booking.setStatus(BookingStatus.CANCELED);
+        bookingDao.update(booking);
         System.out.println("Booking canceled");
     }
 

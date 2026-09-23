@@ -9,4 +9,6 @@ public interface BookingDao {
     Booking getBookingById(UUID id);
 
     void save(Booking booking);
+
+    default void update(Booking booking){};
 }
