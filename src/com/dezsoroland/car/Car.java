@@ -1,10 +1,13 @@
 package com.dezsoroland.car;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Objects;
 import java.util.UUID;
 
-public class Car {
+public class Car implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private UUID id;
     private String carBrand;
     private String model;

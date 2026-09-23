@@ -1,8 +1,10 @@
 package com.dezsoroland.booking;
 
 import com.dezsoroland.car.Car;
+import com.dezsoroland.car.CarArrayDataAccessService;
 import com.dezsoroland.car.CarService;
 import com.dezsoroland.user.User;
+import com.dezsoroland.user.UserArrayDataAccessService;
 import com.dezsoroland.user.UserService;
 
 import java.io.IOException;
@@ -14,12 +16,17 @@ import java.util.Arrays;
 import java.util.UUID;
 
 public class BookingService {
-    CarService carService = new CarService();
-    UserService userService = new UserService();
-    BookingDao bookingDao = new BookingDao();
+    private final CarService carService;
+    private final UserService userService;
+    private final BookingDao bookingDao;
 
+    public BookingService(CarService carService, UserService userService, BookingDao bookingDao) {
+        this.carService = carService;
+        this.userService = userService;
+        this.bookingDao = bookingDao;
+    }
 
-    public void createBooking(UUID userId, UUID carId, LocalDate startDate, LocalDate endDate) {
+    public void createBooking(UUID userId, UUID carId, LocalDate startDate, LocalDate endDate) throws IOException {
         User user = userService.getUserById(userId);
         Car car = carService.getCarById(carId);
 
