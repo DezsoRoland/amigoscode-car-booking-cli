@@ -3,13 +3,16 @@ package com.dezsoroland.booking;
 import com.dezsoroland.car.Car;
 import com.dezsoroland.user.User;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
-public class Booking {
+public class Booking implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private UUID id;
     private Car car;
     private LocalDate startDate;
