@@ -54,8 +54,7 @@ public class CarBookingFileDataAccessService implements BookingDao {
         try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(file))) {
             return (Booking[]) in.readObject();
         } catch (IOException | ClassNotFoundException e) {
-            System.out.println("Could not read bookings: " + e.getMessage());
-            return new Booking[0];
+            throw new IllegalStateException("Could not read bookings from " + FILE_NAME, e);
         }
     }
 
@@ -63,7 +62,7 @@ public class CarBookingFileDataAccessService implements BookingDao {
         try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(FILE_NAME))) {
             out.writeObject(bookings);
         } catch (IOException e) {
-            System.out.println("Could not save bookings: " + e.getMessage());
+            throw new IllegalStateException("Could not save bookings to " + FILE_NAME, e);
         }
     }
 }

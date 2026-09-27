@@ -2,13 +2,25 @@ package com.dezsoroland.user;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.UUID;
 
 public class UserArrayDataAccessService implements UserDao {
     @Override
     public User[] getAllUsers() throws IOException {
-        String content = Files.readString(Path.of("src/com/dezsoroland/Users.csv"));
+        Path path = Path.of("src/com/dezsoroland/Users.csv");
+        String content;
+
+        try {
+            content = Files.readString(path);
+        } catch (NoSuchFileException e) {
+            System.out.println("Users file not found: " + path.toAbsolutePath());
+            return new User[0];
+        } catch (IOException e) {
+            System.out.println("Could not read users: " + e.getMessage());
+            return new User[0];
+        }
 
         String[] lines = content.split("\\R");
 
