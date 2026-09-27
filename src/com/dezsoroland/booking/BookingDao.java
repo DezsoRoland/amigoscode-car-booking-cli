@@ -10,5 +10,5 @@ public interface BookingDao {
 
     void save(Booking booking);
 
-    default void update(Booking booking){};
+    void update(Booking booking);
 }

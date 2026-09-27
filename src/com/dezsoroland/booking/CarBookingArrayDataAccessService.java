@@ -29,4 +29,7 @@ public class CarBookingArrayDataAccessService implements BookingDao {
         updated[bookings.length] = booking;
         bookings = updated;
     }
+
+    @Override
+    public void update(Booking booking) {}
 }
