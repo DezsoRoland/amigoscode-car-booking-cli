@@ -1,23 +1,27 @@
 package com.dezsoroland.user;
 
+import java.io.IOException;
 import java.util.UUID;
 
 public class UserService {
-    private final UserDao userDAO = new UserDao();
+    private final UserDao userDao;
 
-
-    public User[] getAllUsers() {
-        return userDAO.getAllUsers();
+    public UserService(UserDao userDao) {
+        this.userDao = userDao;
     }
 
-    public void listAllUserNames() {
+    public User[] getAllUsers() throws IOException {
+        return userDao.getAllUsers();
+    }
+
+    public void listAllUserNames() throws IOException {
         User[] users = getAllUsers();
         for (User user : users) {
             System.out.println(user.getName());
         }
     };
 
-    public boolean isValidUser(UUID id) {
+    public boolean isValidUser(UUID id) throws IOException {
         User[] users = getAllUsers();
         for (User user : users) {
             if (user.getId().equals(id)) {
@@ -28,7 +32,7 @@ public class UserService {
         return false;
     };
 
-    public User getUserById(UUID id) {
-       return userDAO.getUserById(id);
+    public User getUserById(UUID id) throws IOException {
+       return userDao.getUserById(id);
     }
 }

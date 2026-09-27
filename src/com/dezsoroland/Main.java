@@ -1,8 +1,11 @@
 package com.dezsoroland;
 
-import com.dezsoroland.booking.Booking;
-import com.dezsoroland.booking.BookingService;
+import com.dezsoroland.booking.*;
+import com.dezsoroland.car.CarArrayDataAccessService;
+import com.dezsoroland.car.CarDao;
 import com.dezsoroland.car.CarService;
+import com.dezsoroland.user.UserArrayDataAccessService;
+import com.dezsoroland.user.UserDao;
 import com.dezsoroland.user.UserService;
 
 import java.io.IOException;
@@ -15,9 +18,15 @@ import java.util.UUID;
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
-    static UserService userService = new UserService();
-    static CarService carService = new CarService();
-    static BookingService bookingService = new BookingService();
+    static UserDao userDao = new UserArrayDataAccessService();
+    static CarDao carDao = new CarArrayDataAccessService();
+
+    static BookingDao bookingDao = new CarBookingFileDataAccessService();
+    //static BookingDao bookingDao = new CarBookingArrayDataAccessService();
+
+    static UserService userService = new UserService(userDao);
+    static CarService carService = new CarService(carDao);
+    static BookingService bookingService = new BookingService(carService, userService, bookingDao);
 
     public static UUID readUserId(Scanner scanner) throws IOException {
         System.out.println("Please give a user Id:");
