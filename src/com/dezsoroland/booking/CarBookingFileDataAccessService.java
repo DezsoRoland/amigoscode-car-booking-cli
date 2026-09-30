@@ -1,20 +1,22 @@
 package com.dezsoroland.booking;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class CarBookingFileDataAccessService implements BookingDao {
 
     private static final String FILE_NAME = "bookings.dat";
 
-    private Booking[] bookings;
+    private final List<Booking> bookings;
 
     public CarBookingFileDataAccessService() {
         bookings = readFromFile();
     }
 
     @Override
-    public Booking[] getAllBookings() {
+    public List<Booking> getAllBookings() {
         return bookings;
     }
 
@@ -30,13 +32,7 @@ public class CarBookingFileDataAccessService implements BookingDao {
 
     @Override
     public void save(Booking booking) {
-        Booking[] updated = new Booking[bookings.length + 1];
-        for (int i = 0; i < bookings.length; i++) {
-            updated[i] = bookings[i];
-        }
-        updated[bookings.length] = booking;
-        bookings = updated;
-
+       bookings.add(booking);
         writeToFile();
     }
 
@@ -45,14 +41,15 @@ public class CarBookingFileDataAccessService implements BookingDao {
         writeToFile();
     }
 
-    private Booking[] readFromFile() {
+    private List<Booking> readFromFile() {
+
         File file = new File(FILE_NAME);
         if (!file.exists()) {
-            return new Booking[0];
+            return new ArrayList<>();
         }
 
         try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(file))) {
-            return (Booking[]) in.readObject();
+            return (List<Booking>) in.readObject();
         } catch (IOException | ClassNotFoundException e) {
             throw new IllegalStateException("Could not read bookings from " + FILE_NAME, e);
         }

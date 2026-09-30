@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 import java.util.UUID;
 
@@ -125,8 +126,8 @@ public class Main {
     }
 
     public static void getAllBookings() throws IOException {
-        Booking[] bookings = bookingService.getAllBookings();
-        if (bookings.length == 0) {
+        List<Booking> bookings = bookingService.getAllBookings();
+        if (bookings.isEmpty()) {
             System.out.println("There are no bookings");
         } else {
             for (Booking booking : bookings) {
@@ -139,16 +140,16 @@ public class Main {
     public static void getBookingByUserId(Scanner scanner) throws IOException {
        UUID userId = readUserId(scanner);
 
-       Booking[] bookingsByUser = bookingService.getBookingsByUserId(userId);
-       System.out.println(Arrays.toString(bookingsByUser));
+       List<Booking> bookingsByUser = bookingService.getBookingsByUserId(userId);
+       System.out.println(bookingsByUser);
     }
 
     public static void getAvailableCars() throws IOException {
-        System.out.println(Arrays.toString(bookingService.getAvailableCars()));
+        System.out.println(bookingService.getAvailableCars());
     }
 
     public static void getAvailableElectricCars() throws IOException {
-        System.out.println(Arrays.toString(bookingService.getAvailableElectricCars()));
+        System.out.println(bookingService.getAvailableElectricCars());
     }
 
     public static void deleteBookingById(Scanner scanner) throws IOException {

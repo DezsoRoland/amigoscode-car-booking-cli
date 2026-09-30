@@ -1,5 +1,6 @@
 package com.dezsoroland.car;
 
+import java.util.List;
 import java.util.UUID;
 
 public class CarService {
@@ -9,21 +10,13 @@ public class CarService {
         this.carDao = carDao;
     }
 
-    public Car[] getAllCars() {
+    public List<Car> getAllCars() {
         return carDao.getAllCars();
     }
 
 
     public boolean isValidCar(UUID id) {
-        Car[] cars = getAllCars();
-
-        for (Car car : cars) {
-            if(id.equals(car.getId())) {
-                return true;
-            };
-        }
-
-        return false;
+        return getCarById(id) != null;
     };
 
     public Car getCarById(UUID id) {

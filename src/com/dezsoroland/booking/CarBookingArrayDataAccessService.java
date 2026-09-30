@@ -1,12 +1,14 @@
 package com.dezsoroland.booking;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class CarBookingArrayDataAccessService implements BookingDao {
-    private Booking[] bookings = new Booking[0];
+    private final List<Booking> bookings = new ArrayList<>();
 
     @Override
-    public Booking[] getAllBookings() {
+    public List<Booking> getAllBookings() {
         return bookings;
     }
 
@@ -22,12 +24,7 @@ public class CarBookingArrayDataAccessService implements BookingDao {
 
     @Override
     public void save(Booking booking) {
-        Booking[] updated = new Booking[bookings.length + 1];
-        for (int i = 0; i < bookings.length; i++) {
-            updated[i] = bookings[i];
-        }
-        updated[bookings.length] = booking;
-        bookings = updated;
+        bookings.add(booking);
     }
 
     @Override

@@ -1,10 +1,11 @@
 package com.dezsoroland.booking;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface BookingDao {
 
-    Booking[] getAllBookings();
+    List<Booking> getAllBookings();
 
     Booking getBookingById(UUID id);
 
