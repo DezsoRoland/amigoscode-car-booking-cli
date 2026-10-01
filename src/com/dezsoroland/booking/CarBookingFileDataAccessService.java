@@ -17,7 +17,7 @@ public class CarBookingFileDataAccessService implements BookingDao {
 
     @Override
     public List<Booking> getAllBookings() {
-        return bookings;
+        return new ArrayList<>(bookings);
     }
 
     @Override

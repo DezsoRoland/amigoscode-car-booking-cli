@@ -1,10 +1,8 @@
 package com.dezsoroland.booking;
 
 import com.dezsoroland.car.Car;
-import com.dezsoroland.car.CarArrayDataAccessService;
 import com.dezsoroland.car.CarService;
 import com.dezsoroland.user.User;
-import com.dezsoroland.user.UserArrayDataAccessService;
 import com.dezsoroland.user.UserService;
 
 import java.io.IOException;
@@ -13,7 +11,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -79,18 +76,18 @@ public class BookingService {
     }
 
     public List<Booking> getAllBookings() {
-            return bookingDao.getAllBookings();
+        return bookingDao.getAllBookings();
     }
 
     public List<Booking> getBookingsByUserId(UUID userId) {
         List<Booking> bookings = bookingDao.getAllBookings();
         List<Booking> result = new ArrayList<>();
-        
+
 
         for (Booking booking : bookings) {
             if (booking.getUser().getId().equals(userId)) {
                 result.add(booking);
-                
+
             }
         }
 
@@ -147,5 +144,5 @@ public class BookingService {
         }
 
         return false;
-    };
+    }
 }

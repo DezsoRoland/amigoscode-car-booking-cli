@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -18,10 +19,10 @@ public class UserArrayDataAccessService implements UserDao {
             content = Files.readString(path);
         } catch (NoSuchFileException e) {
             System.out.println("Users file not found: " + path.toAbsolutePath());
-            return new ArrayList<>();
+            return Collections.emptyList();
         } catch (IOException e) {
             System.out.println("Could not read users: " + e.getMessage());
-            return new ArrayList<>();
+            return Collections.emptyList();
         }
 
         String[] lines = content.split("\\R");
