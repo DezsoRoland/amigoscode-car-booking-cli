@@ -4,11 +4,14 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 public class UserArrayDataAccessService implements UserDao {
     @Override
-    public User[] getAllUsers() throws IOException {
+    public List<User> getAllUsers() throws IOException {
         Path path = Path.of("src/com/dezsoroland/Users.csv");
         String content;
 
@@ -16,22 +19,22 @@ public class UserArrayDataAccessService implements UserDao {
             content = Files.readString(path);
         } catch (NoSuchFileException e) {
             System.out.println("Users file not found: " + path.toAbsolutePath());
-            return new User[0];
+            return Collections.emptyList();
         } catch (IOException e) {
             System.out.println("Could not read users: " + e.getMessage());
-            return new User[0];
+            return Collections.emptyList();
         }
 
         String[] lines = content.split("\\R");
 
-        User[] users = new User[lines.length - 1];
+        List<User> users = new ArrayList<>();
 
-        for (int i = 1; i < lines.length; i++) {
-            String[] data = lines[i].split(",");
-            UUID id = UUID.fromString(data[0]);
-            String name = data[1];
-
-            users[i - 1] = new User(id, name);
+        for (String line : lines) {
+            if (line.isBlank() || line.startsWith("id,")) {
+                continue;
+            }
+            String[] data = line.split(",");
+            users.add(new User(UUID.fromString(data[0].trim()), data[1].trim()));
         }
 
         return users;

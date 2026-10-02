@@ -11,7 +11,7 @@ import com.dezsoroland.user.UserService;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
-import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 import java.util.UUID;
 
@@ -45,7 +45,7 @@ public class Main {
     }
 
 
-    public static UUID readCarId(Scanner scanner) throws IOException {
+    public static UUID readCarId(Scanner scanner) {
         System.out.println("Please give a car Id:");
         while (true) {
             String input = scanner.nextLine().trim();
@@ -61,7 +61,7 @@ public class Main {
         }
     }
 
-    public static UUID readBookingId(Scanner scanner) throws IOException {
+    public static UUID readBookingId(Scanner scanner) {
         System.out.println("Please give a booking Id:");
         while (true) {
             String input = scanner.nextLine().trim();
@@ -113,20 +113,20 @@ public class Main {
 
     public static void createBooking(Scanner scanner) throws IOException {
 
-       UUID userId = readUserId(scanner);
+        UUID userId = readUserId(scanner);
 
-       UUID carId = readCarId(scanner);
+        UUID carId = readCarId(scanner);
 
-       LocalDate startDate = readStartDate(scanner);
+        LocalDate startDate = readStartDate(scanner);
 
-       LocalDate endDate = readEndDate(scanner, startDate);
+        LocalDate endDate = readEndDate(scanner, startDate);
 
-       bookingService.createBooking(userId, carId, startDate, endDate);
+        bookingService.createBooking(userId, carId, startDate, endDate);
     }
 
-    public static void getAllBookings() throws IOException {
-        Booking[] bookings = bookingService.getAllBookings();
-        if (bookings.length == 0) {
+    public static void getAllBookings() {
+        List<Booking> bookings = bookingService.getAllBookings();
+        if (bookings.isEmpty()) {
             System.out.println("There are no bookings");
         } else {
             for (Booking booking : bookings) {
@@ -137,21 +137,21 @@ public class Main {
     }
 
     public static void getBookingByUserId(Scanner scanner) throws IOException {
-       UUID userId = readUserId(scanner);
+        UUID userId = readUserId(scanner);
 
-       Booking[] bookingsByUser = bookingService.getBookingsByUserId(userId);
-       System.out.println(Arrays.toString(bookingsByUser));
+        List<Booking> bookingsByUser = bookingService.getBookingsByUserId(userId);
+        System.out.println(bookingsByUser);
     }
 
-    public static void getAvailableCars() throws IOException {
-        System.out.println(Arrays.toString(bookingService.getAvailableCars()));
+    public static void getAvailableCars() {
+        System.out.println(bookingService.getAvailableCars());
     }
 
-    public static void getAvailableElectricCars() throws IOException {
-        System.out.println(Arrays.toString(bookingService.getAvailableElectricCars()));
+    public static void getAvailableElectricCars() {
+        System.out.println(bookingService.getAvailableElectricCars());
     }
 
-    public static void deleteBookingById(Scanner scanner) throws IOException {
+    public static void deleteBookingById(Scanner scanner) {
         UUID bookingId = readBookingId(scanner);
 
         bookingService.deleteBooking(bookingId);

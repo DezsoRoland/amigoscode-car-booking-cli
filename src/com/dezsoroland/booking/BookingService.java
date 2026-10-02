@@ -1,10 +1,8 @@
 package com.dezsoroland.booking;
 
 import com.dezsoroland.car.Car;
-import com.dezsoroland.car.CarArrayDataAccessService;
 import com.dezsoroland.car.CarService;
 import com.dezsoroland.user.User;
-import com.dezsoroland.user.UserArrayDataAccessService;
 import com.dezsoroland.user.UserService;
 
 import java.io.IOException;
@@ -12,7 +10,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class BookingService {
@@ -76,60 +75,49 @@ public class BookingService {
         return true;
     }
 
-    public Booking[] getAllBookings() {
-            return bookingDao.getAllBookings();
+    public List<Booking> getAllBookings() {
+        return bookingDao.getAllBookings();
     }
 
-    public Booking[] getBookingsByUserId(UUID userId) {
-        Booking[] bookings = bookingDao.getAllBookings();
-        Booking[] result = new Booking[bookings.length];
-        int count = 0;
+    public List<Booking> getBookingsByUserId(UUID userId) {
+        List<Booking> bookings = bookingDao.getAllBookings();
+        List<Booking> result = new ArrayList<>();
+
 
         for (Booking booking : bookings) {
             if (booking.getUser().getId().equals(userId)) {
-                result[count] = booking;
-                count++;
+                result.add(booking);
+
             }
         }
 
-        return Arrays.copyOf(result, count);
+        return result;
     }
 
 
-    public Car[] getAvailableCars() {
+    public List<Car> getAvailableCars() {
         LocalDate today = LocalDate.now();
         LocalDate tomorrow = today.plusDays(1);
-        Car[] cars = carService.getAllCars();
+        List<Car> cars = carService.getAllCars();
 
-        Car[] result = new Car[cars.length];
-        int count = 0;
+        List<Car> result = new ArrayList<>();
 
         for (Car car : cars) {
             if (isCarAvailable(car.getId(), today, tomorrow)) {
-                result[count] = car;
-                count++;
+                result.add(car);
             }
         }
 
-        return Arrays.copyOf(result, count);
+        return result;
     }
 
-    public Car[] getAvailableElectricCars() {
-        Car[] availableCars = getAvailableCars();
+    public List<Car> getAvailableElectricCars() {
+        List<Car> availableCars = getAvailableCars();
+        List<Car> electricCars = new ArrayList<>();
 
-        int electricCount = 0;
         for (Car car : availableCars) {
             if (car.isElectric()) {
-                electricCount++;
-            }
-        }
-
-        Car[] electricCars = new Car[electricCount];
-        int index = 0;
-        for (Car car : availableCars) {
-            if (car.isElectric()) {
-                electricCars[index] = car;
-                index++;
+                electricCars.add(car);
             }
         }
         return electricCars;
@@ -156,5 +144,5 @@ public class BookingService {
         }
 
         return false;
-    };
+    }
 }
