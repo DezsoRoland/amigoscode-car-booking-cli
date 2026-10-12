@@ -25,28 +25,19 @@ public class UserArrayDataAccessService implements UserDao {
             return Collections.emptyList();
         }
 
-        String[] lines = content.split("\\R");
-
-        List<User> users = new ArrayList<>();
-
-        for (String line : lines) {
-            if (line.isBlank() || line.startsWith("id,")) {
-                continue;
-            }
-            String[] data = line.split(",");
-            users.add(new User(UUID.fromString(data[0].trim()), data[1].trim()));
-        }
-
-        return users;
+        return content.lines()
+                .filter(line->!line.isBlank())
+                .filter(line-> !line.startsWith("id, "))
+                .map(line -> line.split(","))
+                .map(data -> new User(UUID.fromString(data[0].trim()), data[1].trim()))
+                .toList();
     }
 
     @Override
     public User getUserById(UUID id) throws IOException {
-        for (User user : getAllUsers()) {
-            if (user.getId().equals(id)) {
-                return user;
-            }
-        }
-        return null;
+       return getAllUsers().stream()
+               .filter(user -> user.getId().equals(id))
+               .findFirst()
+               .orElse(null);
     }
 }

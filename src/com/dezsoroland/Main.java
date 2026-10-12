@@ -129,9 +129,7 @@ public class Main {
         if (bookings.isEmpty()) {
             System.out.println("There are no bookings");
         } else {
-            for (Booking booking : bookings) {
-                System.out.println(booking);
-            }
+           bookings.forEach(System.out::println);
         }
 
     }

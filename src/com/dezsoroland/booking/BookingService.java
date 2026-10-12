@@ -59,20 +59,11 @@ public class BookingService {
     }
 
     public boolean isCarAvailable(UUID carId, LocalDate startDate, LocalDate endDate) {
-        for (Booking booking : getAllBookings()) {
-            if (!booking.getCar().getId().equals(carId)) {
-                continue;
-            }
-            if (booking.getStatus() != BookingStatus.ACTIVE) {
-                continue;
-            }
-            boolean overlaps = startDate.isBefore(booking.getEndDate())
-                    && endDate.isAfter(booking.getStartDate());
-            if (overlaps) {
-                return false;
-            }
-        }
-        return true;
+              return getAllBookings().stream()
+                .filter(booking -> booking.getCar().getId().equals(carId))
+                .filter(booking -> booking.getStatus() != BookingStatus.ACTIVE)
+                .noneMatch(booking -> startDate.isBefore(booking.getEndDate())
+                        && endDate.isAfter(booking.getStartDate()));
     }
 
     public List<Booking> getAllBookings() {
@@ -80,47 +71,24 @@ public class BookingService {
     }
 
     public List<Booking> getBookingsByUserId(UUID userId) {
-        List<Booking> bookings = bookingDao.getAllBookings();
-        List<Booking> result = new ArrayList<>();
-
-
-        for (Booking booking : bookings) {
-            if (booking.getUser().getId().equals(userId)) {
-                result.add(booking);
-
-            }
-        }
-
-        return result;
+        return bookingDao.getAllBookings().stream()
+                .filter(booking -> booking.getUser().getId().equals(userId))
+                .toList();
     }
-
 
     public List<Car> getAvailableCars() {
         LocalDate today = LocalDate.now();
         LocalDate tomorrow = today.plusDays(1);
-        List<Car> cars = carService.getAllCars();
 
-        List<Car> result = new ArrayList<>();
-
-        for (Car car : cars) {
-            if (isCarAvailable(car.getId(), today, tomorrow)) {
-                result.add(car);
-            }
-        }
-
-        return result;
+        return carService.getAllCars().stream()
+                .filter(car -> isCarAvailable(car.getId(), today, tomorrow))
+                .toList();
     }
 
     public List<Car> getAvailableElectricCars() {
-        List<Car> availableCars = getAvailableCars();
-        List<Car> electricCars = new ArrayList<>();
-
-        for (Car car : availableCars) {
-            if (car.isElectric()) {
-                electricCars.add(car);
-            }
-        }
-        return electricCars;
+              return getAvailableCars().stream()
+                .filter(Car::isElectric)
+                .toList();
     }
 
     public void deleteBooking(UUID id) {
@@ -137,12 +105,7 @@ public class BookingService {
     }
 
     public boolean isValidBooking(UUID id) {
-        for (Booking booking : getAllBookings()) {
-            if (booking.getId().equals(id)) {
-                return true;
-            }
-        }
-
-        return false;
+        return getAllBookings().stream()
+                .anyMatch(booking -> booking.getId().equals(id));
     }
 }

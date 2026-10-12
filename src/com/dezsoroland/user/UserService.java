@@ -16,10 +16,9 @@ public class UserService {
     }
 
     public void listAllUserNames() throws IOException {
-        List<User> users = getAllUsers();
-        for (User user : users) {
-            System.out.println(user.getName());
-        }
+        getAllUsers().stream()
+                .map(User::getName)
+                .forEach(System.out::println);
     }
 
     public boolean isValidUser(UUID id) throws IOException {
