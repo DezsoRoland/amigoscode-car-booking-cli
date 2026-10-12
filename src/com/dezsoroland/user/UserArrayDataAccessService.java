@@ -26,8 +26,8 @@ public class UserArrayDataAccessService implements UserDao {
         }
 
         return content.lines()
-                .filter(line->!line.isBlank())
-                .filter(line-> !line.startsWith("id, "))
+                .filter(line-> !line.isBlank())
+                .filter(line-> !line.startsWith("id,"))
                 .map(line -> line.split(","))
                 .map(data -> new User(UUID.fromString(data[0].trim()), data[1].trim()))
                 .toList();
