@@ -26,5 +26,6 @@ public class CarBookingArrayDataAccessService implements BookingDao {
     }
 
     @Override
-    public void update(Booking booking) {}
+    public void update(Booking booking) {
+    }
 }

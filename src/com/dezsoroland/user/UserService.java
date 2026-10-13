@@ -26,6 +26,6 @@ public class UserService {
     }
 
     public User getUserById(UUID id) throws IOException {
-       return userDao.getUserById(id);
+        return userDao.getUserById(id);
     }
 }

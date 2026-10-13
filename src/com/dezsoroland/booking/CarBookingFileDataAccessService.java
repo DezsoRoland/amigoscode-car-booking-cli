@@ -30,7 +30,7 @@ public class CarBookingFileDataAccessService implements BookingDao {
 
     @Override
     public void save(Booking booking) {
-       bookings.add(booking);
+        bookings.add(booking);
         writeToFile();
     }
 

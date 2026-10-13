@@ -10,7 +10,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -59,9 +58,14 @@ public class BookingService {
     }
 
     public boolean isCarAvailable(UUID carId, LocalDate startDate, LocalDate endDate) {
-              return getAllBookings().stream()
+        return isCarAvailable(bookingDao.getAllBookings(), carId, startDate, endDate);
+    }
+
+    private boolean isCarAvailable(List<Booking> bookings, UUID carId,
+                                   LocalDate startDate, LocalDate endDate) {
+        return bookings.stream()
                 .filter(booking -> booking.getCar().getId().equals(carId))
-                .filter(booking -> booking.getStatus() != BookingStatus.ACTIVE)
+                .filter(booking -> booking.getStatus() == BookingStatus.ACTIVE)
                 .noneMatch(booking -> startDate.isBefore(booking.getEndDate())
                         && endDate.isAfter(booking.getStartDate()));
     }
@@ -79,14 +83,15 @@ public class BookingService {
     public List<Car> getAvailableCars() {
         LocalDate today = LocalDate.now();
         LocalDate tomorrow = today.plusDays(1);
+        List<Booking> bookings = bookingDao.getAllBookings();
 
         return carService.getAllCars().stream()
-                .filter(car -> isCarAvailable(car.getId(), today, tomorrow))
+                .filter(car -> isCarAvailable(bookings, car.getId(), today, tomorrow))
                 .toList();
     }
 
     public List<Car> getAvailableElectricCars() {
-              return getAvailableCars().stream()
+        return getAvailableCars().stream()
                 .filter(Car::isElectric)
                 .toList();
     }

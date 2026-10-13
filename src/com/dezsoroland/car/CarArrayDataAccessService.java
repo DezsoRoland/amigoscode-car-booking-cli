@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
-public class CarArrayDataAccessService implements CarDao{
+public class CarArrayDataAccessService implements CarDao {
     private static final List<Car> CARS = List.of(
             new Car(UUID.fromString("3ea1a2cf-0135-4b08-8a4c-5c39988a51ff"),
                     "Chevrolet", "Malibu", "JSHA-560", new BigDecimal("77.00"), false),
