@@ -17,7 +17,7 @@ public class CarService {
 
     public boolean isValidCar(UUID id) {
         return getCarById(id) != null;
-    };
+    }
 
     public Car getCarById(UUID id) {
         return carDao.getCarById(id);
