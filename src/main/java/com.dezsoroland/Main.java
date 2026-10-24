@@ -1,11 +1,16 @@
 package com.dezsoroland;
 
+import com.dezsoroland.booking.Booking;
+import com.dezsoroland.booking.BookingDao;
+import com.dezsoroland.booking.BookingService;
+import com.dezsoroland.booking.CarBookingFileDataAccessService;
 import com.dezsoroland.booking.*;
 import com.dezsoroland.car.CarArrayDataAccessService;
 import com.dezsoroland.car.CarDao;
 import com.dezsoroland.car.CarService;
 import com.dezsoroland.user.UserArrayDataAccessService;
 import com.dezsoroland.user.UserDao;
+import com.dezsoroland.user.UserFakerDataAccessService;
 import com.dezsoroland.user.UserService;
 
 import java.io.IOException;
@@ -18,7 +23,8 @@ import java.util.UUID;
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
-    static UserDao userDao = new UserArrayDataAccessService();
+    //static UserDao userDao = new UserArrayDataAccessService();
+    static UserDao userDao = new UserFakerDataAccessService();
     static CarDao carDao = new CarArrayDataAccessService();
 
     static BookingDao bookingDao = new CarBookingFileDataAccessService();
