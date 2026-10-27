@@ -3,6 +3,9 @@ out/
 !**/src/main/**/out/
 !**/src/test/**/out/
 .kotlin
+.idea
+bookings.dat
+target
 
 ### Eclipse ###
 .apt_generated

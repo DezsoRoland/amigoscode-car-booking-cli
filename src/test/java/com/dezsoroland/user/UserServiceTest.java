@@ -1,5 +1,8 @@
 package com.dezsoroland.user;
 
+import com.dezsoroland.user.User;
+import com.dezsoroland.user.UserDao;
+import com.dezsoroland.user.UserService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

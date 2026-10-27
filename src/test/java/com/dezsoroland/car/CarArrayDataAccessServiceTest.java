@@ -1,6 +1,7 @@
 package com.dezsoroland.car;
 
-import com.dezsoroland.user.User;
+import com.dezsoroland.car.Car;
+import com.dezsoroland.car.CarArrayDataAccessService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -9,7 +10,6 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 class CarArrayDataAccessServiceTest {
 

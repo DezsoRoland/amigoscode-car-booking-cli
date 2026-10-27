@@ -1,5 +1,9 @@
 package com.dezsoroland.booking;
 
+import com.dezsoroland.booking.Booking;
+import com.dezsoroland.booking.BookingDao;
+import com.dezsoroland.booking.BookingService;
+import com.dezsoroland.booking.BookingStatus;
 import com.dezsoroland.car.Car;
 import com.dezsoroland.car.CarService;
 import com.dezsoroland.user.User;
@@ -9,7 +13,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -21,7 +24,6 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -87,6 +89,42 @@ class BookingServiceTest {
     @DisplayName("Returns true if car is free")
     void isCarAvailable() {
         when(bookingDao.getAllBookings()).thenReturn(List.of());
+
+        assertThat(bookingService.isCarAvailable(
+                corolla.getId(), LocalDate.of(2026, 11, 1), LocalDate.of(2026, 11, 5)))
+                .isTrue();
+    }
+
+    @Test
+    @DisplayName("Returns false if periods overlap")
+    void isCarAvailableWhenPeriodsOverlap() {
+        when(bookingDao.getAllBookings()).thenReturn(List.of(
+                booking(corolla, LocalDate.of(2026, 11, 3), LocalDate.of(2026, 11, 8),
+                        BookingStatus.ACTIVE)));
+
+        assertThat(bookingService.isCarAvailable(
+                corolla.getId(), LocalDate.of(2026, 11, 1), LocalDate.of(2026, 11, 5)))
+                .isFalse();
+    }
+
+    @Test
+    @DisplayName("Returns true if overlapping booking is canceled")
+    void isCarAvailableWhenBookingIsCanceled() {
+        when(bookingDao.getAllBookings()).thenReturn(List.of(
+                booking(corolla, LocalDate.of(2026, 11, 3), LocalDate.of(2026, 11, 8),
+                        BookingStatus.CANCELED)));
+
+        assertThat(bookingService.isCarAvailable(
+                corolla.getId(), LocalDate.of(2026, 11, 1), LocalDate.of(2026, 11, 5)))
+                .isTrue();
+    }
+
+    @Test
+    @DisplayName("Returns true if overlapping booking is for another car")
+    void isCarAvailableWhenOverlappingBookingIsForAnotherCar() {
+        when(bookingDao.getAllBookings()).thenReturn(List.of(
+                booking(model3, LocalDate.of(2026, 11, 3), LocalDate.of(2026, 11, 8),
+                        BookingStatus.ACTIVE)));
 
         assertThat(bookingService.isCarAvailable(
                 corolla.getId(), LocalDate.of(2026, 11, 1), LocalDate.of(2026, 11, 5)))

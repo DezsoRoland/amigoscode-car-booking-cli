@@ -1,5 +1,8 @@
 package com.dezsoroland.booking;
 
+import com.dezsoroland.booking.Booking;
+import com.dezsoroland.booking.BookingStatus;
+import com.dezsoroland.booking.CarBookingFileDataAccessService;
 import com.dezsoroland.car.Car;
 import com.dezsoroland.user.User;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,7 +18,6 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 class CarBookingFileDataAccessServiceTest {
 
